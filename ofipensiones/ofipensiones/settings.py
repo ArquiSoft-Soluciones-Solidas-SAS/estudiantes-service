@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
+import mongoengine
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,7 +26,7 @@ SECRET_KEY = 'django-insecure-zz0$$^0yis)ih&(i1zbw0z=888halt$pe4)eqify6urg_b9rr(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'estudiantesService'
 ]
 
 MIDDLEWARE = [
@@ -73,16 +75,28 @@ WSGI_APPLICATION = 'ofipensiones.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'estudiantes_service',
-        'USER': 'microservicios_user',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'estudiantes_service',
+#         'USER': 'microservicios_user',
+#         'PASSWORD': 'password',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+MONGODB_DATABASES = {
+    "default": {
+        "name": 'estudiantes_service',
+        "host": 'mongodb://microservicios_user:password@localhost:27017',
+        "tz_aware": True, # if you using timezones in django (USE_TZ = True)
+    },
 }
+
+mongoengine.connect(
+    db="estudiantes_service",
+    host="mongodb://microservicios_user:password@localhost:27017",
+    authentication_source="admin")
 
 
 # Password validation
@@ -127,3 +141,4 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# MongoDB Atlas Config
