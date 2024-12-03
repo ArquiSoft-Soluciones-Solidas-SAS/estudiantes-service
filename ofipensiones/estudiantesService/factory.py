@@ -24,8 +24,13 @@ def obtener_cursos_embebidos():
     """
     Conecta a la base de datos remota y obtiene los cursos embebidos dentro de las instituciones.
     """
-    r = requests.get(settings.PATH_INSTITUCIONES, headers={"Accept":"application/json"})
+    r = requests.get(settings.PATH_INSTITUCIONES + "/listar-instituciones/", headers={"Accept":"application/json"})
+    if r.status_code != 200:
+        print("Error al obtener las instituciones.")
+        return []
     instituciones = r.json()["instituciones"]
+    print("Instituciones obtenidas exitosamente.")
+    print("Instituciones: ", instituciones)
     cursos = []
     for institucion in instituciones:
         for curso in institucion["cursos"]:
