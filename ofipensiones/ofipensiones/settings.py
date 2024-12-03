@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 import mongoengine
 from pathlib import Path
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -137,8 +136,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+PATH_API_GATEWAY = "http://" + os.environ.get("KONG_HOST", "10.128.0.81") + ":" + os.environ.get("KONG_PORT", "8000")
+PATH_INSTITUCIONES = PATH_API_GATEWAY + "/instituciones"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # MongoDB Atlas Config

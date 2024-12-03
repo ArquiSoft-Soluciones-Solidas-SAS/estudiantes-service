@@ -3,7 +3,9 @@ from bson import ObjectId
 from factory import Faker
 from faker.generator import random
 from pymongo import MongoClient
-
+from django.conf import settings
+import requests
+import json
 from .models import Estudiante
 import factory.django
 from factory.mongoengine import MongoEngineFactory
@@ -22,24 +24,17 @@ def obtener_cursos_embebidos():
     """
     Conecta a la base de datos remota y obtiene los cursos embebidos dentro de las instituciones.
     """
-    cliente = MongoClient("mongodb://microservicios_user:password@localhost:27017")
-    db = cliente["instituciones-service"]
-    coleccion_instituciones = db["instituciones"]
-
-    instituciones = coleccion_instituciones.find()
+    r = requests.get(settings.PATH_INSTITUCIONES, headers={"Accept":"application/json"})
+    instituciones = r.json()["instituciones"]
     cursos = []
-
     for institucion in instituciones:
-        print(institucion)
-        for curso in institucion.get("cursos", []):
+        for curso in institucion["cursos"]:
             cursos.append({
                 "id": curso["id"],
-                "idInstitucion": institucion["id"],
                 "nombreInstitucion": institucion["nombreInstitucion"],
+                "institucionEstudianteId": institucion["id"],
             })
-
     return cursos
-
 
 def asignar_estudiantes_a_cursos():
     """
@@ -57,7 +52,7 @@ def asignar_estudiantes_a_cursos():
             EstudianteFactory(
                 nombreEstudiante=Faker('name'),
                 codigoEstudiante=Faker('ean13'),
-                institucionEstudianteId=curso["idInstitucion"],  # Asignamos el ID único de la institución
+                institucionEstudianteId=curso["institucionEstudianteId"],  # Asignamos el ID único de la institución
                 nombreInstitucion=curso["nombreInstitucion"],
                 cursoEstudianteId=curso["id"],  # Asignamos el ID único del curso
             )
