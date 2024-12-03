@@ -18,6 +18,7 @@ class EstudianteFactory(MongoEngineFactory):
 
     nombreEstudiante = Faker('name')
     codigoEstudiante = Faker('ean13')
+    
 
 
 def obtener_cursos_embebidos():
@@ -30,7 +31,6 @@ def obtener_cursos_embebidos():
         return []
     instituciones = r.json()["instituciones"]
     print("Instituciones obtenidas exitosamente.")
-    print("Instituciones: ", instituciones)
     cursos = []
     for institucion in instituciones:
         for curso in institucion["cursos"]:
@@ -61,5 +61,6 @@ def asignar_estudiantes_a_cursos():
                 nombreInstitucion=curso["nombreInstitucion"],
                 cursoEstudianteId=curso["id"],  # Asignamos el ID único del curso
             )
+    print(f"{numero_estudiantes} estudiantes asignados al curso {curso['id']} de la institución {curso['nombreInstitucion']}.")
 
-    print("Estudiantes asignados exitosamente a los cursos.")
+print("Estudiantes asignados exitosamente a los cursos.")
