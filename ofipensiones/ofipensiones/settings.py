@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'estudiantesService'
+    'estudiantesService',
+    'dj_cqrs',
 ]
 
 MIDDLEWARE = [
@@ -141,3 +142,12 @@ PATH_INSTITUCIONES = PATH_API_GATEWAY + "/instituciones"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # MongoDB Atlas Config
+
+# CQRS settings
+CQRS = {
+    'transport': 'dj_cqrs.transport.RabbitMQTransport',
+    'host': '10.142.0.12',
+    'port': 5672,
+    'user': 'microservicios_user',
+    'password': 'password',
+}
