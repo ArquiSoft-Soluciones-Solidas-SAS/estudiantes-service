@@ -10,6 +10,7 @@ from .models import Estudiante
 import factory.django
 from factory.mongoengine import MongoEngineFactory
 from faker_education import SchoolProvider
+from .utils import send_to_rabbitmq
 
 
 class EstudianteFactory(MongoEngineFactory):
@@ -19,7 +20,28 @@ class EstudianteFactory(MongoEngineFactory):
     nombreEstudiante = Faker('name')
     codigoEstudiante = Faker('ean13')
     
-
+    @classmethod
+    def _after_postgeneration(cls, instance, create, results=None):
+        """
+        Publica un mensaje en RabbitMQ después de crear el estudiante.
+        """
+        if create:
+            message = {
+                "type": "estudiante_created",
+                "data": {
+                    "id": str(instance.id),
+                    "nombreEstudiante": instance.nombreEstudiante,
+                    "codigoEstudiante": instance.codigoEstudiante,
+                    "cursoEstudianteId": str(instance.cursoEstudiante.id),
+                    "nombreInstitucion": instance.nombreInstitucion,
+                    "institucionEstudianteId": str(instance.institucionEstudianteId)
+                }
+            }
+            send_to_rabbitmq(
+                exchange='estudiantes',
+                routing_key='estudiante.created',
+                message=message
+            )
 
 def obtener_cursos_embebidos():
     """
@@ -61,6 +83,6 @@ def asignar_estudiantes_a_cursos():
                 nombreInstitucion=curso["nombreInstitucion"],
                 cursoEstudianteId=curso["id"],  # Asignamos el ID único del curso
             )
-    print(f"{numero_estudiantes} estudiantes asignados al curso {curso['id']} de la institución {curso['nombreInstitucion']}.")
+        print(f"{numero_estudiantes} estudiantes asignados al curso {curso['id']} de la institución {curso['nombreInstitucion']}.")
 
 print("Estudiantes asignados exitosamente a los cursos.")
