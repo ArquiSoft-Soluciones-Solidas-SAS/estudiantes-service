@@ -32,9 +32,9 @@ class EstudianteFactory(MongoEngineFactory):
                     "id": str(instance.id),
                     "nombreEstudiante": instance.nombreEstudiante,
                     "codigoEstudiante": instance.codigoEstudiante,
-                    "cursoEstudianteId": str(instance.cursoEstudiante.id),
+                    "institucionEstudianteId": str(instance.institucionEstudianteId),
                     "nombreInstitucion": instance.nombreInstitucion,
-                    "institucionEstudianteId": str(instance.institucionEstudianteId)
+                    "cursoEstudianteId": str(instance.cursoEstudianteId)
                 }
             }
             send_to_rabbitmq(
@@ -85,4 +85,4 @@ def asignar_estudiantes_a_cursos():
             )
         print(f"{numero_estudiantes} estudiantes asignados al curso {curso['id']} de la institución {curso['nombreInstitucion']}.")
 
-print("Estudiantes asignados exitosamente a los cursos.")
+    print("Estudiantes asignados exitosamente a los cursos.")
